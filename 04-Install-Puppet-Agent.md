@@ -54,7 +54,7 @@ yum install -y puppet-agent
 ```
 Une fois l'installation terminée, accédez au répertoire de configuration de puppet et modifiez le fichier puppet.conf.
 ```
-vi /etc/puppet/puppet.conf
+vi /etc/puppetlabs/puppet/puppet.conf
 ```
 Collez la configuration suivante.
 ```
