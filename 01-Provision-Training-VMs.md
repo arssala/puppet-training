@@ -166,7 +166,7 @@ Ceci conclut le lab n°1. Vous devriez maintenant avoir 3 machines virtuelles op
 
 ---
 
-Continuez vers **Lab #2** -> [Préparez-vous à installer Puppet Enterprix](02-Prep-to-Install-Puppet-Master.md # lab-2)
+Continuez vers **Lab #2** -> [Préparez-vous à installer Puppet Enterprix](02-Prep-to-Install-Puppet-Master.md#lab-2)
 
 ---
 
