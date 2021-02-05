@@ -6,7 +6,6 @@
 
 ---
 
-
 ### Aperçu
 
 Temps pour terminer: 60 minutes
@@ -37,25 +36,19 @@ Nous allons commencer à utiliser le terme **catalogue** dans les sections suiva
 En termes simples, il s'agit simplement de la version **compilée** de votre code Puppet (manifest). Quand l'agent Puppet s'exécute, il renvoie tous les facts sur le système sur lequel il s'exécute au Puppet Master.
 Tout le code Puppet se situe sur le Puppet Master, et master prend tout les variables Puppet, les facts et le code (logique conditionnelle, fonctions, etc.) et les compile en un ensemble statique d'instructions à exécuter côté agent. Toutes ces instructions sont exécuté côté agent dans un certain ordre tel que déterminé par les dépendances définies dans votre code Puppet.
 
-Un autre concept important à comprendre est que lorsque le catalogue est compilé, toutes les fonctions
-et la logique conditionnelle que vous avez dans vos manifestes est évaluée du côté master, pas du côté agent. Les variables Puppet telles que les facts système sont également interpolées à ce moment. La totalité de la prise de décision dans un manifest a déjà eu lieu lorsque l'agent reçoit son catalogue, de sorte que l'agent exécute simplement les instructions qu'il reçoit dans le bon ordre.
+Un autre concept important à comprendre est que lorsque le catalogue est compilé, toutes les fonctions et la logique conditionnelle que vous avez dans vos manifestes est évaluée du côté master, pas du côté agent. Les variables Puppet telles que les facts système sont également interpolées à ce moment. La totalité de la prise de décision dans un manifest a déjà eu lieu lorsque l'agent reçoit son catalogue, de sorte que l'agent exécute simplement les instructions qu'il reçoit dans le bon ordre.
 
 ### Définition de classes et déclaration de classes
 
 Tout d'abord, nous devons comprendre la différence entre **définir** une classe et **déclarer** une classe.
 
-** Définition des classes **
+**Définition des classes**
 
 - blocs nommés de code Puppet qui sont généralement stockés dans des modules pour une utilisation ultérieure
 - ne sont PAS appliqués tant qu'ils ne sont pas appelés par leur nom (déclarés)
 - ils peuvent être ajoutés au catalogue d’un nœud en les déclarant dans vos manifests
-- ou en les affectant à partir d'un ENC (external node classifier.)
 
-Nous n'avons pas encore parlé de **Hiera**, un add-on de Puppet qui est inclus dans Puppet Enterprise. Hiera, bien que n'étant pas techniquement une ENC, peut être utilisé comme un. Nous en apprendrons plus sur Hiera dans un lab ultérieur. Pour l'instant, nous allons utiliser les définitions de nœud avec la déclaration de classe d'inclusion ou de style de ressource (avec des paramètres)
-
-En outre, la PE console est livrée configurée OOTB comme ENC. Dans un lab ultérieur nous expliquerons comment cela fonctionne, et nous désactiverons également cette fonctionnalité afin de permettre à Hiera d'être utilisé comme une ENC.
-
-** Déclaration d'une classe dans un manifest Puppet **
+**Déclaration d'une classe dans un manifest Puppet**
 
 - ajoute toutes ses ressources au catalogue.
 
@@ -63,7 +56,6 @@ Vous pouvez déclarer des classes
 
 - dans les définitions de nœud au niveau supérieur dans le manifeste du site (site.pp)
 - dans d'autres classes (par exemple, classes de profil lors de l'utilisation du paradigme Rôles et profils)
-- via une ENC (ou utiliser Hiera comme ENC)
 
 Les documents officiels de PuppetLabs parlent longuement de [Déclarer des classes](https://docs.puppet.com/puppet/3.8/reference/lang_classes.html#declaring-classes)
 
@@ -80,10 +72,6 @@ La classe **common_hosts** devrait être définie dans un fichier nommé `common
 La bonne chose à propos de **include** est que si la classe contenue a déjà été déclarée ailleurs, elle ne sera plus ajoutée au catalogue (ce qui serait une erreur de Puppet.) Les ressources ne peuvent être déclarées **qu'une seule** fois. Si vous essayez de déclarer la même ressource (identifiée par son nom) deux ou plusieurs fois, puppet lancera une erreur.
 
 Si vous mettez cette instruction include dans votre `site.pp`, en dehors de toute définition de nœud, elle s'appliquerait à chaque nœud. (Remarque: ce n'est pas le même que l'inclure dans la section `node default {}`, qui ne s'applique que si aucune autre définition de nœud ne correspond.)
-
-Il existe une autre façon de déclarer une classe appelée **Déclarations de type ressource** que nous ignorerons pour le moment, car ce style de déclaration ne sera vraiment pas nécessaire une fois que nous aurons atteint notre section sur **Hiera**.
-
-Vous pouvez en savoir plus sur les [Déclarations similaires aux ressources](https://docs.puppet.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations) dans la documentation PuppetLabs.
 
 ### En savoir plus sur la classification des nœuds
 
@@ -180,10 +168,9 @@ Configurons puppet pour nous assurer que certains packages sont installés sur n
 Connectez-vous à votre nœud Puppet Master et devenez root
 
 ```
-     cd /etc/puppetlabs/code/environments/production/manifests
-     vi common_packages.pp
+cd /etc/puppetlabs/code/environments/production/manifests
+vi common_packages.pp
 ```
-
 Nous ajouterons ce nouveau manifeste dans l'environnement **production** dans le répertoire **manifests**.
 
 Notez que Puppet recherche du code dans le répertoire des manifestes en fonction de l'environnement dont il fait partie, et la valeur 'manifest' de la configuration .
@@ -260,7 +247,7 @@ Enregistrez-le, puis exécutez 'puppet agent -t' sur votre machine virtuelle d'a
      Notice: Applied catalog in 19.05 seconds
 ```
 
-Avez-vous remarqué que seuls certains packages ont été installés? Si vous faites un `yum info net-tools` vous remarquerez qu'il était déjà installé, donc Puppet ne a rien fait pour ce package. Remarque: net-tools est requis pour Puppet, donc quand nous avons installé puppet, ce package a été automatiquement installé.
+Avez-vous remarqué que seuls certains packages ont été installés? Si vous faites un `yum info net-tools` vous remarquerez qu'il était déjà installé, donc Puppet n'a rien fait pour ce package. Remarque: net-tools est requis pour Puppet, donc quand nous avons installé puppet, ce package a été automatiquement installé.
 
 Maintenant que ces 5 packages ont été installés, si vous exécutez à nouveau puppet, aucune  modification supplémentaire ne sera apportée.
 

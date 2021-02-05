@@ -25,32 +25,20 @@ Dans le lab suivant, vous installerez les logiciels suivants:
 2. **gitlab** (GitLab, qui exécutera également l'agent Puppet)
 
 ### Etapes
-* Téléchargez les logiciels nécessaires pour ce tutoriel ...
-```
-[puppet-tutorial-pe]$ cd share
-[puppet-tutorial-pe/share]$ cd software
-[puppet-tutorial-pe/share/software]$ ./download-all.sh
-```
-
 * Installez VirtualBox
-      - trouvez le programme d'installation approprié dans le répertoire `puppet-tutorial-pe/share/software/virtualbox/`
-      - Des programmes d'installation pour Mac OS X et Windows sont fournis, mais d'autres peuvent également être téléchargés
-      - autres installateurs disponibles ici: <https://www.virtualbox.org/wiki/Downloads>
-
-* Démarrez VirtualBox et configurez `Default Machine Folder` pour placer les VMs dans un répertoire autre que celui par défaut (si vous le souhaitez), puis quittez à nouveau VirtualBox.
+  installateurs disponibles ici: <https://www.virtualbox.org/wiki/Downloads>
 
 * Installez Vagrant
-      - trouvez le programme d'installation approprié dans `puppet-tutorial-pe/share/software/vagrant`
-      - d'autres disponibles ici: <https://www.vagrantup.com/downloads.html>
+  disponibles ici: <https://www.vagrantup.com/downloads.html>
 
-* cd dans `puppet-tutorial-pe/`
+* cd dans `puppet-training/`
 
 * Nous installons un plugin Vagrant pour gérer les `VirtualBox guest additions`
 
 * Puis `vagrant up puppet` pour provisionner la VM
 
 ```
-cd puppet-tutorial-pe
+cd puppet-training
 vagrant plugin install vagrant-vbguest
 vagrant up puppet
 ```
@@ -86,29 +74,6 @@ Si tout se passe bien avec ce qui précède, nous pouvons être sûrs que notre 
 
 Reconnectons-nous à la machine virtuelle *Puppet* avec `vagrant ssh puppet`
 
-Vous devriez voir qui est `/share` dans la sortie `df`. Il s'agit de votre espace de système de fichiers partagé qui est également accessible en dehors de la machine virtuelle
-
-```
-$ vagrant ssh puppet
-Last login: Fri Oct 21 15:14:38 2020 from 10.0.2.2
-[vagrant@puppet ~]$ df -h /share
-Filesystem      Size  Used Avail Use% Mounted on
-none            223G  206G   18G  93% /share
-```
-
-Ce répertoire `/share` est accessible **à la fois** dans votre VM et depuis votre système hôte.
-Par exemple, si vous copiez un fichier dans `/share` dans votre VM, vous pourrez le trouver à partir de votre OS hôte dans `puppet-tutorial-pe/share/` (et vice versa)
-
-Si pour une raison quelconque, vous ne voyez pas le système de fichiers `/share/` monté, essayez d'arrêter votre VM et de redémarrer. Parfois, les outils VMware doivent être mis à jour et un arrêt/démarrage déclenchera que:
-
-```
-[vagrant @ puppet ~]$ exit
-[puppet-tutorial-pe]$ vagrant halt Puppet
-[puppet-tutorial-pe]$ vagrant up puppet
-[puppet-tutorial-pe]$ vagrant ssh puppet
-```
-
-... et vérifiez à nouveau.
 
 ### Explorez plus de commandes Vagrant
 
@@ -138,9 +103,9 @@ Une fois que vous avez provisionné vos VM **gitlab** et **agent**, vous devriez
 $ vagrant global-status
 id       name         provider   state    directory
 ------------------------------------------------------------------------------
-4dd5ed7  puppet       virtualbox running  /Users/Mark/Vagrant/puppet-tutorial-pe
-070258c  gitlab       virtualbox running  /Users/Mark/Vagrant/puppet-tutorial-pe
-682eafe  agent        virtualbox running  /Users/Mark/Vagrant/puppet-tutorial-pe
+4dd5ed7  puppet       virtualbox running  /Users/Mark/Vagrant/puppet-training
+070258c  gitlab       virtualbox running  /Users/Mark/Vagrant/puppet-training
+682eafe  agent        virtualbox running  /Users/Mark/Vagrant/puppet-training
 
 The above shows information about all known Vagrant environments
 on this machine. This data is cached and may not be completely
@@ -153,13 +118,12 @@ with Vagrant commands from any directory. For example:
 ### Validez votre environnement de formation
 
 Nous avons utilisé Vagrant pour provisionner 3 machines virtuelles d'entraînement. Si vous êtes curieux de savoir comment
-Les VM sont configurées, jetez un œil au [puppet-tutorial-pe/Vagrantfile](/ Vagrantfile)
+Les VM sont configurées, jetez un œil au [puppet-training/Vagrantfile](Vagrantfile)
 
 Nous avons utilisé une boîte de base personnalisée qui contient déjà certains éléments dont nous avons besoin (packages, configuration, etc.)
-Cette boîte de base personnalisée a déjà des entrées dans `/ etc/hosts` que nous voulons/avons besoin (puisque nous allons
-comptez sur/etc/hosts pour résoudre les noms dans notre environnement de formation.)
+Cette boîte de base personnalisée a déjà des entrées dans `/etc/hosts` que nous voulons/avons besoin (puisque nous allons comptez sur/etc/hosts pour résoudre les noms dans notre environnement de formation.)
 
-Chaque VM doit avoir les contnets suivants dans leur fichier `/ etc/hosts`:
+Chaque VM doit avoir les contnets suivants dans leur fichier `/etc/hosts`:
 
 ```
 127.0.0.1       localhost
@@ -168,11 +132,9 @@ Chaque VM doit avoir les contnets suivants dans leur fichier `/ etc/hosts`:
 192.168.198.12  gitlab.example.com  gitlab
 ```
 
-Avec les 3 de vos machines virtuelles opérationnelles, vérifiez que vous pouvez envoyer un ping à chaque
-le FQDN ainsi que le nom court.
+Avec les 3 de vos machines virtuelles opérationnelles, vérifiez que vous pouvez envoyer un ping à chaque FQDN ainsi que le nom court.
 
 Par exemple:
-
 
 ```
 [vagrant@puppet ~]$ ping puppet.example.com
@@ -196,61 +158,11 @@ PING puppet.example.com (192.168.198.10) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.052/0.079/0.098/0.021 ms
 ```
 
-Vous devriez également pouvoir effectuer des ssh entre chaque VM en tant qu'utilisateur ** vagrant **
-ou l'utilisateur **root**. Le mot de passe par défaut est simplement **"vagrant"**. Donne-le
-essayez si vous le souhaitez. Vous devriez également pouvoir effectuer une connexion SSH vers l'une de vos VM à partir de
-l'hôte lui-même. Vous pouvez apprendre le port ssh à utiliser en utilisant le `vagrant ssh-config`
-commander. Essaie:
-
-```
-[puppet-tutorial-pe]$ vagrant ssh-config puppet
-Host puppet
-  HostName 127.0.0.1
-  User vagrant
-  Port 22022
-  UserKnownHostsFile /dev/null
-  StrictHostKeyChecking no
-  PasswordAuthentication no
-  IdentityFile /Users/Mark/.vagrant.d/boxes/bentlema-VAGRANTSLASH-centos-7.2-64/1.0.0/virtualbox/vagrant_private_key
-  IdentitiesOnly yes
-  LogLevel FATAL
-```
-
-Notez que le port NAT est 22022.
-
-```
-[puppet-tutorial-pe]$ ssh root@127.0.0.1 -p 22022
-Warning: Permanently added '[127.0.0.1]:22022' (ECDSA) to the list of known hosts.
-root@127.0.0.1's password:
-Last login: Fri Nov 11 21:57:06 2016
-[root@puppet ~]# exit
-logout
-Connection to 127.0.0.1 closed.
-```
-
-Cette capacité à ssh entre nos VM deviendra utile dans un lab ultérieur (lorsque nous configurons R10K pour extraire le code de GitLab.)
+Vous devriez également pouvoir effectuer des ssh entre chaque VM en tant qu'utilisateur **vagrant** ou l'utilisateur **root**. Le mot de passe par défaut est simplement **"vagrant"**. Vous devriez également pouvoir effectuer une connexion SSH vers l'une de vos VM à partir de l'hôte elle-même.
 
 ### Ensuite ...
 
-Ceci conclut le lab n ° 1. Vous devriez maintenant avoir 3 machines virtuelles opérationnelles nommées comme
-indiqué ci-dessus dans la sortie **global-status** ci-dessus.
-
-
-Si vous ne prévoyez pas de passer immédiatement au lab suivant, vous voudrez peut-être
-pour arrêter toutes vos machines virtuelles d'entraînement. Assurez-vous d'avoir quitté la session ssh
-de chaque VM, et revenez à l'invite du shell sur votre poste de travail, puis émettez
-le "vagrant halt" pour chaque VM comme suit:
-
-```
-vagrant halt puppet
-vagrant halt agent
-vagrant halt gitlab
-```
-
-Remarque: faire un **arrêt** arrêtera en douceur votre VM, pas simplement
-il éteint. Vous n'avez **pas** besoin d'arrêter d'abord le système d'exploitation qui s'exécute dans la machine virtuelle. Si vous
-faire cela, le **vagrant halt** ne pourra pas s'arrêter gracieusement,
-timeout essayant, puis éteignez la machine virtuelle.
+Ceci conclut le lab n°1. Vous devriez maintenant avoir 3 machines virtuelles opérationnelles nommées comme indiqué ci-dessus dans la sortie **global-status** ci-dessus.
 
 ---
 

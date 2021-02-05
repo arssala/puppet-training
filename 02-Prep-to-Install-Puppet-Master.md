@@ -2,7 +2,7 @@
 
 ---
 
-### **Lab #2** - Préparez l'installation de Puppet Enterprise sur la VM **puppet**
+### **Lab #2** - Préparez l'installation de Puppet sur la VM **puppet**
 
 ---
 
@@ -10,7 +10,7 @@
 
 Temps pour terminer: 10 minutes
 
-Dans cet atelier, nous effectuerons certaines étapes de pré-installation pour préparer notre VM à prendre Puppet Enterprise
+Dans cet atelier, nous effectuerons certaines étapes de pré-installation pour préparer notre VM à prendre Puppet
 
 ### Démarrez vos VM de formation
 
@@ -20,22 +20,20 @@ Si ce n'est déjà fait ...
 vagrant up puppet
 ```
 
-
 Si vous ne connaissez pas l'état de vos VM contrôlées par vagrant, vous pouvez toujours vérifier avec ...
 
 ```
 $ vagrant global-status
 id       name         provider   state    directory
 --------------------------------------------------------------------------------
-4dd5ed7  puppet       virtualbox running  /Users/Mark/Vagrant/puppet-tutorial-pe
-070258c  gitlab       virtualbox poweroff /Users/Mark/Vagrant/puppet-tutorial-pe
-682eafe  agent        virtualbox poweroff /Users/Mark/Vagrant/puppet-tutorial-pe
+4dd5ed7  puppet       virtualbox running  /Users/Mark/Vagrant/puppet-training
+070258c  gitlab       virtualbox poweroff /Users/Mark/Vagrant/puppet-training
+682eafe  agent        virtualbox poweroff /Users/Mark/Vagrant/puppet-training
 ```
 
 Notez que la VM **puppet** est en cours d'exécution, mais les VM **gitlab** et **agent** sont éteintes.
 
 ### Connectez-vous à votre machine virtuelle de formation
-
 
 ```
 $ vagrant ssh puppet
@@ -72,26 +70,19 @@ logout
 
 Tout au long des travaux pratiques, vous devrez exécuter de nombreuses commandes (la plupart) en tant que root.
 
-Utiliser sudo est une bonne habitude à développer, mais démarrer un shell root peut être plus
-pratique tant que vous vous souvenez que vous pouvez gravement endommager un système en cours d'exécution si vous tapez la mauvaise commande au mauvais endroit. (par exemple, que faire si vous copiez accidentellement et collez du texte dans un shell  root, et il contient des commandes qui suppriment tout le répertoire /lib?)
 
 ### Étapes de pré-installation
 
-Il y a quelques choses que nous devons faire pour que notre VM soit prête à prendre PE:
+Il y a quelques choses que nous devons faire pour que notre VM soit prête à recevoir Puppet:
 
-    - Ajoutez quelques entrées au fichier /etc/hosts (si ce n'est déjà fait)
-    - Ouvrez certains ports via le pare-feu hôte
+    - Ajouter quelques entrées au fichier /etc/hosts (si ce n'est pas déjà fait)
+    - Ouvrir certains ports via le pare-feu hôte
 
 ### Modifier /etc/hosts
 
-Le fichier `/etc/hosts` devrait déjà être configuré correctement, mais si pour une raison quelconque
-vous trouvez que ce n'est pas le cas, allez-y et modifiez-le comme suit.
+Le fichier `/etc/hosts` devrait déjà être configuré correctement, mais si pour une raison quelconque vous trouvez que ce n'est pas le cas, allez-y et modifiez-le comme suit.
 
 Modifiez `/etc/hosts` et ajoutez des entrées pour localhost, ainsi que nos 3 machines virtuelles du lab, les deux noms long (FQDN) et court.
-
-    Remarque: aux fins de cette formation, nous n'utiliserons pas de DNS. Nous nous fierons
-          sur le fichier /etc/hosts pour la résolution de noms. Dans un déploiement de production
-          vous voudriez certainement utiliser des noms de domaine complets (FQDN), et très probablement DNS aussi.
 
 ```
 sudo vi /etc/hosts
@@ -145,7 +136,7 @@ public (default, active)
   rich rules:
 ```
 
-D'accord, nous sommes maintenant prêts à exécuter le programme d'installation de Puppet Enterprise ...
+D'accord, nous sommes maintenant prêts à exécuter le programme d'installation de Puppet ...
 
 ---
 
