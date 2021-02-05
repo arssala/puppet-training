@@ -370,7 +370,6 @@ Remarque: les définitions de nœuds ne peuvent être effectuées qu'au niveau s
 Toute variable déclarée dans le `site.pp` est automatiquement une variable de **Top-Scope**.
 Les variables de **Top-Scope** sont accessibles dans tout votre code Puppet en les référençant avec `$::varname`
 
-La nouveauté de Puppet 3.8 (et versions ultérieures) est que tout manifeste au niveau supérieur est automatiquement lu, en plus du `site.pp`, bien que je recommande d'avoir UNIQUEMENT un site.pp, et de ne pas introduire d'autres manifests au niveau supérieur car cela peut causer des problèmes de classement si vous lisez des données hiera pour définir des variables de première portée et que vous essayez d'utiliser ces variables dans d'autres manifests de la première portée.
 
 ### Affectant les valeurs par défaut des paramètres de ressource
 
@@ -410,7 +409,7 @@ Quand on dit:
 Nous pourrions même mettre le code `Package ensure installed` dans le site.pp, et ce serait alors une valeur par défaut globale pour les ressources du package partout.
 
 Nous pouvons remplacer la valeur par défaut que nous venons de définir en spécifiant la chaîne de version dans le paramètre ensure.
-Exemple d'épinglage à une version/version spécifique d'un package:
+Exemple d'épinglage à une version spécifique d'un package:
 
 ```puppet
 
@@ -430,7 +429,7 @@ Si nous exécutons un système EL6, les packages **nc** et **nmap** seront insta
 Si nous exécutons un système EL7, le package **whois** sera installé dans la version spécifique que nous avons spécifiée.
 (Tout cela suppose que les versions que nous avons spécifiées sont disponibles dans notre référentiel de packages.)
 
-La chose légèrement ennuyeuse ici serait que si vous mainteniez ce package sur plusieurs plates-formes et versions, vous devrez gérer les chaînes de version pour chacune. Par exemple, pour le package **whois**, nous pourrions avoir plusieurs versions différentes pour chaque plateforme:
+La chose légèrement ennuyeuse ici est que si vous mainteniez ce package sur plusieurs plates-formes et versions, vous devrez gérer les chaînes de version pour chacune. Par exemple, pour le package **whois**, nous pourrions avoir plusieurs versions différentes pour chaque plateforme:
 
 ```
      5.1.0-1.el5
@@ -438,7 +437,7 @@ La chose légèrement ennuyeuse ici serait que si vous mainteniez ce package sur
      5.1.1-2.el7
 ```
 
-Il est ennuyeux que la plate-forme (el5, el6 ou el7) soit incluse dans le release par exemple. Si vous ne l'incluez pas, Puppet ne reconnaîtra pas la version. Il serait préférable de dire simplement '5.1.1' et de demander au provider de déterminer si nous exécutons cette version, mais cela ne nous aiderait pas si la version '5.1.1' n'est pas disponible sur EL5 , et nous voulons y installer '5.1.0'.
+Il est ennuyeux que la plate-forme (el5, el6 ou el7) soit incluse dans la release par exemple. Si vous ne l'incluez pas, Puppet ne reconnaîtra pas la version. Il serait préférable de dire simplement '5.1.1' et de demander au provider de déterminer si nous exécutons cette version, mais cela ne nous aiderait pas si la version '5.1.1' n'est pas disponible sur EL5 , et nous voulons y installer '5.1.0'.
 
 Une solution à ce problème pourrait être d'utiliser Hiera avec **$::operatingsystemmajrelease** dans la hiérarchie, puis de spécifier la chaîne de version de package spécifique pour chacun dans le fichier yaml approprié. Nous examinerons la configuration de Hiera dans le prochain lab et montrons comment procéder.
 

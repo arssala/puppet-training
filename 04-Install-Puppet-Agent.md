@@ -45,12 +45,12 @@ mais pour l'instant, nous les ajoutons manuellement.
 ### Installer l'agent
 Add the puppet labs repo:
 ```
-rpm -ivh https://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7-11.noarch.rpm
+rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
 ```
 
 Install the Puppet Client:
 ```
-yum install -y puppet
+yum install -y puppet-agent
 ```
 Une fois l'installation terminée, accédez au répertoire de configuration de puppet et modifiez le fichier puppet.conf.
 ```
@@ -64,7 +64,14 @@ server = puppet.example.com
 environment = production
 runinterval = 1h
 ```
+
 ### Exécutez l'agent Puppet
+
+Créez un lien soft du binaire puppet:
+
+```
+ln -s /opt/puppetlabs/bin/puppet /usr/bin/puppet
+```
 
 Exécutez l'agent Puppet manuellement. Cela entraînera une demande de certificat SSL
 à générer et à envoyer au Puppet Master (si ce n'est pas déjà envoyée en arrière-plan.)
