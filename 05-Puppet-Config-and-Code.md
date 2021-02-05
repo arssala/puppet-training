@@ -22,8 +22,8 @@ Dans ce lab, nous nous familiariserons avec:
 Commençons par regarder le **Puppet Master** (puppet.example.com)
 
 Le fichier de configuration de Puppet, ainsi que les différents
-autres composants fournis sont stockés sous **/etc/puppet**
-Regardons Puppet, sa configuration et son code sous: **/etc/puppet**
+autres composants fournis sont stockés sous **/etc/puppetlabs**.
+Regardons Puppet, sa configuration et son code sous: **/etc/puppetlabs**
 
 Voici les fichiers et répertoires que nous allons commencer à examiner.
 
@@ -63,10 +63,10 @@ il peut être distribué et utilisé par d'autres personnes facilement.) Nous en
 
 ### Le répertoire des environnements
 
-PE est livré avec une configuration d'environnement unique, appelée **production**. Les environnements sont utiles pour contenir différents ensembles de modules, code et données du site.
+Puppet est livré avec une configuration d'environnement unique, appelée **production**. Les environnements sont utiles pour contenir différents ensembles de modules, code et données du site.
 Il est possible, par exemple, de tester une version plus récente d'un module, ou un code Puppet que vous développez activement, dans un environnement différent, totalement séparé de l'environnement **production**.
 De cette façon, vous pouvez apporter des modifications à votre code, le tester sur un système de test, sans avoir jamais à se soucier d'affecter les systèmes de production. Nous reviendrons sur ce sujet plus en profondeur dans un lab ultérieur ... Pour l'instant, sachez ceci:
-l'environnement obtient son propre répertoire dans le répertoire **environnements**,
+l'environnement obtient son propre répertoire dans le répertoire **environments**,
 et chaque environnement contient son propre ensemble de manifests, modules, files, templates et données Hiera.
 
 ### Le répertoire des modules
@@ -78,8 +78,7 @@ Commençons par examiner certaines des choses que nous pourrions faire à partir
 
 ### Liste des modules installés
 
-Puppet Enterprise est livré avec certains modules préinstallés. Pour voir ce qui est installé,
-exécutez la commande `puppet module list` comme suit sur votre nœud Puppet (le "Puppet Master"):
+Dans certains cas, Puppet est livré avec certains modules préinstallés. Pour voir ce qui est installé, exécutez la commande `puppet module list` comme suit sur votre nœud Puppet (le "Puppet Master"):
 
 ```
      puppet module list
@@ -117,8 +116,7 @@ installé dans l'environnement **production**. Par défaut,les modules sont inst
 ```
 
 Le modulepath contient des chemins absolus séparés par deux-points vers les emplacements où
-puppet doit rechercher des modules Puppet. Lors de l'utilisation d'un module, le
-Puppet Master cherchera dans chaque répertoire de gauche à droite jusqu'à ce qu'il trouve
+puppet doit rechercher des modules Puppet. Lors de l'utilisation d'un module, le Puppet Master cherchera dans chaque répertoire de gauche à droite jusqu'à ce qu'il trouve
 le module. Il utilisera le premier module trouvé si vous avez le même module
 installé à plusieurs endroits.
 
@@ -127,12 +125,12 @@ Que faire si vous souhaitez utiliser ce même module dans un environnement diff�
 ```
      [root@puppet environments]# cd /etc/puppetlabs/code/
      [root@puppet code]# mkdir -p environments/development/modules
-     [root@puppet code]# puppet module install --environment development puppetlabs/stdlib --version 4.9.1
+     [root@puppet code]# puppet module install --environment development puppetlabs/stdlib --version 6.6.0
      Notice: Preparing to install into /etc/puppetlabs/code/environments/development/modules ...
      Notice: Downloading from https://forgeapi.puppetlabs.com ...
      Notice: Installing -- do not interrupt ...
      /etc/puppetlabs/code/environments/development/modules
-     └── puppetlabs-stdlib (v4.9.1)
+     └── puppetlabs-stdlib (v6.6.0)
 ```
 
 Remarquez qu'il existe maintenant deux répertoires d'environnement (**development** et **production**), et nous avons installé deux versions différentes du module **stdlib**.
@@ -152,11 +150,11 @@ Remarquez qu'il existe maintenant deux répertoires d'environnement (**developme
              └── stdlib
 
      [root@puppet code]# grep '"version":' environments/*/modules/stdlib/metadata.json
-     environments/development/modules/stdlib/metadata.json:  "version": "4.9.1",
+     environments/development/modules/stdlib/metadata.json:  "version": "6.6.0",
      environments/production/modules/stdlib/metadata.json:  "version": "4.13.1",
 ```
 
-* L'environnement de développement a la v4.9.1
+* L'environnement de développement a la v6.6.0
 * L'environnement de production a la v4.13.0
 
 Que faire si nous voulons installer un module dans le répertoire "site modules" dans /etc/puppetlabs/code/modules?
@@ -189,7 +187,7 @@ Maintenant, nous allons `grep`er récursivement à travers les fichiers en comme
 ```
      [root@puppet code]# grep -r '"version":' .
      ./environments/production/modules/stdlib/metadata.json:  "version": "4.13.1",
-     ./environments/development/modules/stdlib/metadata.json:  "version": "4.9.1",
+     ./environments/development/modules/stdlib/metadata.json:  "version": "6.6.0",
      ./modules/stdlib/metadata.json:  "version": "4.12.0",
 ```
 
@@ -201,9 +199,6 @@ Vous pouvez également utiliser la commande **puppet module list** pour voir que
      puppet help module
 ```
 
-Nous venons de voir comment installer un module manuellement. Plus tard, nous verrons comment utiliser R10K pour télécharger et installer des modules Puppet.
-
-Nous en apprendrons plus sur l'utilisation des différents environnements plus tard. Pour l'instant, utilisez simplement l'environnement **production** par défaut.
 
 avant de passer à la section suivante, faisons à nouveau une vérification manuelle du Puppet Master et du nœud agent.
 
@@ -278,25 +273,16 @@ pour la première fois, et soumet une demande de signature de certificat SSL. C'
      puppet cert list --all
 ```
 
-Par défaut, l'agent s'exécutera dans l'environnement de 'production'. Dans Puppet Enterprise, l'environnement est communiqué à l'agent par la PE console, qui fonctionne comme un ENC (External Node Classifier).
+Par défaut, l'agent s'exécutera dans l'environnement de 'production'.
 
-L'environnement peut également être remplacé dans puppet.conf, bien que des étapes supplémentaires sont nécessaires pour désactiver la PE console ENC. Nous allons couvrir ce processus dans un lab ultérieur. Si la PE console ENC est désactivée, on serait alors en mesure de spécifier l'environnement côté agent dans son `/etc/puppetlabs/puppet/puppet.conf` comme suit:
+L'environnement peut également être remplacé dans puppet.conf, on serait alors en mesure de spécifier l'environnement côté agent dans son `/etc/puppetlabs/puppet/puppet.conf` comme suit:
 
 ```
      [agent]
      environment = production
 ```
 
-Là encore, PE Console contrôle quel environnement est attribué à un nœud/agent. Si vous essayez de définir l'environnement sur autre chose que ce qui est défini dans la PE console, la prochaine exécution de Puppet retournera l'environnement à ce qui est configuré par le PE console. Par exemple, définir l'environnement sur **development** comme suit, ne fonctionnerait pas comme prévu (sans quelques étapes supplémentaires):
-
-```
-     [agent]
-     environment = development
-```
-
 En fait, selon la version de Puppet que vous utilisez, cela pourrait casser votre agent Puppet, vous obligeant à modifier manuellement le `puppet.conf` pour ramener l'environnement à **production**.
-
-Dans un lab ultérieur, nous verrons comment nous pouvons changer l'environnement via la PE console, ainsi qu'en éditant le `puppet.conf`.
 
 ### Sections du puppet.conf
 
